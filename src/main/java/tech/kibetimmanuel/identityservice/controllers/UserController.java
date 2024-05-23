@@ -1,12 +1,15 @@
 package tech.kibetimmanuel.identityservice.controllers;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tech.kibetimmanuel.identityservice.dtos.UserResponse;
 import tech.kibetimmanuel.identityservice.entities.User;
 import tech.kibetimmanuel.identityservice.services.UserService;
 
@@ -15,20 +18,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public ResponseEntity<User> authenticatedUser() {
+    public ResponseEntity<UserResponse> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User currentUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(currentUser);
+        if (authentication != null && authentication.isAuthenticated()) {
+            User currentUser = (User) authentication.getPrincipal();
+            log.info("This is the current user -> {}", currentUser);
+            return ResponseEntity.ok(userService.mapUserToResponse(currentUser));
+        } else {
+            // Handle expired token case (e.g., return 401 or specific error message)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> allUsers() {
+    public ResponseEntity<List<UserResponse>> allUsers() {
         List<User> allUsers = userService.getAllUsers();
-        return ResponseEntity.ok(allUsers);
+        return ResponseEntity.ok(allUsers.stream().map(userService::mapUserToResponse).toList());
     }
 }
