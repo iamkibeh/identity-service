@@ -28,12 +28,16 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String firstName;
+
     @Column(nullable = false)
     private String lastName;
-    @Column(nullable = false, length = 100)
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private String phoneNumber;
+
     @Column(nullable = false)
     private String password;
 

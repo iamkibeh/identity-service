@@ -18,6 +18,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final UserService userService;
 
     public User signup(RegisterUserDto userInput) {
         User user = User.builder()
@@ -45,7 +46,7 @@ public class AuthenticationService {
 
     public LoginResponse mapUserToDto(User authenticatedUser) {
         return LoginResponse.builder()
-                .user(authenticatedUser)
+                .user(userService.mapUserToResponse(authenticatedUser))
                 .token(jwtService.generateToken(authenticatedUser))
                 .expiresIn(jwtService.getJwtExpiration())
                 .build();

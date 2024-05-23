@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.kibetimmanuel.identityservice.entities.User;
 
 @Builder
 @Data
@@ -12,6 +11,6 @@ import tech.kibetimmanuel.identityservice.entities.User;
 @NoArgsConstructor
 public class LoginResponse {
     private String token;
-    private User user;
+    private UserResponse user;
     private long expiresIn;
 }
