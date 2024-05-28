@@ -1,0 +1,38 @@
+services:
+  api_service:
+    container_name: identity-service-api
+    build:
+      context: .
+      args:
+        CONTAINER_PORT: ${CONTAINER_PORT}
+    image: identity-service/api:1.0.2
+#    restart: always
+    ports:
+      - ${HOST_PORT}:${CONTAINER_PORT}
+    networks:
+      - springidentityservice-net
+    env_file:
+      - ${ENV_FILE}
+    expose:
+      - ${CONTAINER_PORT}
+    depends_on:
+      - mysqldb
+
+    volumes:
+      - .m2:/root/.m2
+
+
+  mysqldb:
+    container_name: mysqldb-identity-service
+    image: "mysql:8.0"
+    restart: always
+    env_file:
+      - ${ENV_FILE}
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    networks:
+      - springidentityservice-net
+
+networks:
+  springidentityservice-net:
+    driver: bridge
