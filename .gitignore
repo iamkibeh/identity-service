@@ -33,4 +33,10 @@ build/
 .vscode/
 
 # application.properties file
-/src/main/resources/application.properties
+.env
+.env.dev
+.env.prod
+start-dev.sh
+start-prod.sh
+stop-dev.sh
+src/main/resources/application-dev.yml
